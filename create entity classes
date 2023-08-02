@@ -1,0 +1,81 @@
+@Entity
+public class FinancialAdvisor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long advisorId;
+    
+    private String name;
+    private String email;
+    private String phone;
+    
+    // Getters and setters
+}
+
+@Entity
+public class Client {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long clientId;
+    
+    private String name;
+    
+    @ManyToOne
+    @JoinColumn(name = "advisor_id")
+    private FinancialAdvisor advisor;
+    
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Portfolio> portfolios = new ArrayList<>();
+    
+    // Getters and setters
+}
+
+@Entity
+public class Portfolio {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long portfolioId;
+    
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
+    
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
+    private List<Security> securities = new ArrayList<>();
+    
+    // Getters and setters
+}
+
+@Entity
+public class Security {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long securityId;
+    
+    private String name;
+    private String category;
+    private LocalDate purchaseDate;
+    private BigDecimal purchasePrice;
+    private int quantity;
+    
+    @ManyToOne
+    @JoinColumn(name = "portfolio_id")
+    private Portfolio portfolio;
+    
+    // Getters and setters
+}
+create repositoris
+public interface FinancialAdvisorRepository extends JpaRepository<FinancialAdvisor, Long> {
+}
+
+public interface ClientRepository extends JpaRepository<Client, Long> {
+}
+
+public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
+}
+
+public interface SecurityRepository extends JpaRepository<Security, Long> {
+}
